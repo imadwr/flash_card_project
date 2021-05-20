@@ -21,13 +21,24 @@ for index in french_words_dict:
     }
     data_list.append(new_dict)
 
+random_dict = {}
+
 
 def generate_word():
+    global random_dict, timer
     random_dict = random.choice(data_list)
     for fr_word in random_dict:
-        canvas.itemconfig(title, text="French")
-        canvas.itemconfig(word, text=fr_word)
+        canvas.itemconfig(title, text="French", fill="black")
+        canvas.itemconfig(word, text=fr_word, fill="black")
+    canvas.itemconfig(card_img, image=card_front_img)
+    timer = window.after(3000, func=generate_en_word)
 
+
+def generate_en_word():
+    canvas.itemconfig(card_img, image=card_back_img)
+    for en_word in random_dict.values():
+        canvas.itemconfig(title, text="English", fill="white")
+        canvas.itemconfig(word, text=en_word, fill="white")
 
 
 # --------------------- UI --------------------- #
@@ -35,14 +46,16 @@ window = Tk()
 window.title("Flashy")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
 
+timer = window.after(3000, func=generate_en_word)
+
 # canvas
 canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
 card_front_img = PhotoImage(file="./images/card_front.png")
 card_back_img = PhotoImage(file="./images/card_back.png")
-canvas.create_image(400, 263, image=card_front_img)
-title = canvas.create_text(400, 150, text="Title", font=("Arial", 30, "italic"))
-word = canvas.create_text(400, 263, text="Word", font=("Arial", 50, "bold"))
-generate_word()
+card_img = canvas.create_image(400, 263, image=card_front_img)
+title = canvas.create_text(400, 150, text="", font=("Arial", 30, "italic"))
+word = canvas.create_text(400, 263, text="", font=("Arial", 50, "bold"))
+
 canvas.grid(row=0, column=0, columnspan=2)
 
 # buttons
@@ -58,7 +71,7 @@ right_button.grid(row=1, column=1)
 
 
 
-
+generate_word()
 
 window.mainloop()
 
